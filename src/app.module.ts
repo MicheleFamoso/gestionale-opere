@@ -14,11 +14,13 @@ import { Opera } from './opera/entities/opera.entity';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'michele', // Metti il tuo username MySQL
-      password: '050795', // Metti la tua password MySQL
+      username: 'root',
+      password: '050795',
       database: 'luxportfolio',
       entities: [Categoria, Foto, Opera],
-      synchronize: true, // MAGIA: Crea le tabelle da solo leggendo il codice!
+      synchronize: true,
+      // Aggiungi questa riga se disponibile nel tuo driver
+      connectorPackage: 'mysql2',
     }),
 
     CategoriaModule,

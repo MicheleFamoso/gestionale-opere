@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -16,6 +17,8 @@ class nomeCategoriaMultilingua {
 }
 
 export class CreateCategoriaDto {
+  @IsString() // <--- AGGIUNGI QUESTO!
+  @IsOptional() // Aggiungilo se il campo non è obbligatorio
   descrizioneUsoPersonale: string;
   @IsObject()
   @ValidateNested()

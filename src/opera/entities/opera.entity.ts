@@ -3,7 +3,6 @@ import { Foto } from 'src/foto/entities/foto.entity';
 import {
   Column,
   Entity,
-  Generated,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -16,7 +15,7 @@ export class Opera {
   id: number;
 
   @Column()
-  @Generated('increment')
+  @Column({ type: 'int', default: 0 })
   indice: number;
 
   @Column()

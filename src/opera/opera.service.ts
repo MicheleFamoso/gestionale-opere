@@ -4,6 +4,7 @@ import { UpdateOperaDto } from './dto/update-opera.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Opera } from './entities/opera.entity';
 import { Repository } from 'typeorm';
+
 @Injectable()
 export class OperaService {
   constructor(
@@ -49,5 +50,14 @@ export class OperaService {
       throw new NotFoundException('Opera non trovata');
     }
     return this.operaRepository.remove(opera);
+  }
+
+  async updateOrder(listaId: number[]) {
+    // Riceve l'array [1, 5, 3]
+    return await this.operaRepository.manager.transaction(async (manager) => {
+      for (let i = 0; i < listaId.length; i++) {
+        await manager.update(Opera, listaId[i], { indice: i + 1 });
+      }
+    });
   }
 }

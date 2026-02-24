@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { OperaService } from './opera.service';
 import { CreateOperaDto } from './dto/create-opera.dto';
 import { UpdateOperaDto } from './dto/update-opera.dto';
+import { ReorderOperaDto } from './dto/update-opera-id.dto';
 
 @Controller('opera')
 export class OperaController {
@@ -30,5 +39,11 @@ export class OperaController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.operaService.remove(+id);
+  }
+
+  @Patch('riordina')
+  async updateOrder(@Body() reorderDto: ReorderOperaDto) {
+    // Passiamo reorderDto.id perché il service vuole l'array
+    return await this.operaService.updateOrder(reorderDto.id);
   }
 }

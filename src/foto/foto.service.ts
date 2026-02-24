@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFotoDto } from './dto/create-foto.dto';
 import { UpdateFotoDto } from './dto/update-foto.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Foto } from './entities/foto.entity';
 
+import { Repository } from 'typeorm';
 @Injectable()
 export class FotoService {
-  create(createFotoDto: CreateFotoDto) {
-    return 'This action adds a new foto';
+  constructor(
+    @InjectRepository(Foto)
+    private readonly fotorepository: Repository<Foto>,
+  ) {}
+
+  async create(createFotoDto: CreateFotoDto) {
+    const foto = this.fotorepository.create(createFotoDto);
+    return await this.fotorepository.save(foto);
   }
 
-  findAll() {
-    return `This action returns all foto`;
+  async findAll() {
+    return await this.fotorepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} foto`;
+  async findOne(id: number) {
+    const foto = await this.fotorepository.findOneBy({ id });
+    if (!foto) {
+      throw new NotFoundException('Foto non esistente');
+    }
+    return foto;
   }
 
-  update(id: number, updateFotoDto: UpdateFotoDto) {
-    return `This action updates a #${id} foto`;
+  async update(id: number, updateFotoDto: UpdateFotoDto) {
+    const foto = await this.fotorepository.findOneBy({ id });
+    if (!foto) {
+      throw new NotFoundException('Foto non esistente');
+    }
+    Object.assign(foto, updateFotoDto);
+    return this.fotorepository.save(foto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} foto`;
+  async remove(id: number) {
+    const foto = await this.fotorepository.findOneBy({ id });
+    if (!foto) {
+      throw new NotFoundException('Foto non esistente');
+    }
+    return this.fotorepository.remove(foto);
   }
 }

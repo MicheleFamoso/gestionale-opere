@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOperaDto } from './dto/create-opera.dto';
 import { UpdateOperaDto } from './dto/update-opera.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Opera } from './entities/opera.entity';
+import { Repository } from 'typeorm';
 @Injectable()
 export class OperaService {
-  create(createOperaDto: CreateOperaDto) {
-    return 'This action adds a new opera';
+  constructor(
+    @InjectRepository(Opera)
+    private readonly operaRepository: Repository<Opera>,
+  ) {}
+
+  async create(createOperaDto: CreateOperaDto) {
+    const opera = this.operaRepository.create(createOperaDto);
+    return await this.operaRepository.save(opera);
   }
 
-  findAll() {
-    return `This action returns all opera`;
+  async findAll() {
+    return await this.operaRepository.find({
+      order: {
+        indice: 'ASC', // 'ASC' per ordine crescente (1, 2, 3), 'DESC' per decrescente (3, 2, 1)
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} opera`;
+  async findOne(id: number) {
+    const opera = await this.operaRepository.findOneBy({ id });
+    if (!opera) {
+      throw new NotFoundException('Opera non trovata');
+    }
+    return opera;
   }
 
-  update(id: number, updateOperaDto: UpdateOperaDto) {
-    return `This action updates a #${id} opera`;
+  async update(id: number, updateOperaDto: UpdateOperaDto) {
+    const opera = await this.operaRepository.findOneBy({ id });
+    if (!opera) {
+      throw new NotFoundException('Opera non trovata');
+    }
+    const indiceOriginale = opera.indice;
+    Object.assign(opera, updateOperaDto);
+    opera.indice = indiceOriginale;
+    return opera;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} opera`;
+  async remove(id: number) {
+    const opera = await this.operaRepository.findOneBy({ id });
+    if (!opera) {
+      throw new NotFoundException('Opera non trovata');
+    }
+    return this.operaRepository.remove(opera);
   }
 }

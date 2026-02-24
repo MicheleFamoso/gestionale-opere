@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Opera } from 'src/opera/entities/opera.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Categoria {
   @PrimaryGeneratedColumn()
@@ -9,4 +10,7 @@ export class Categoria {
 
   @Column({ type: 'json' })
   nomeCategoria: { it: string; eng: string };
+
+  @ManyToMany(() => Opera, (opera) => opera.categoria)
+  opere: Opera[];
 }

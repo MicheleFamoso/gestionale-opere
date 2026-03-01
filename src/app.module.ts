@@ -15,7 +15,7 @@ import { Opera } from './opera/entities/opera.entity';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '050795',
+      password: 'Mkl050795Fms!',
       database: 'luxportfolio',
       entities: [Categoria, Foto, Opera],
       synchronize: true,
